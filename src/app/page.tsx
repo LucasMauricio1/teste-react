@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Input from "./components/Input";
 import Icon from "./components/Icon";
 import { useState } from "react";
+import { login } from "@/services/authService";
 
 const loginSchema = z.object({
   email: z.string().email("Insira um e-mail válido.").toLowerCase(),
@@ -14,7 +15,7 @@ const loginSchema = z.object({
 
 export default function Home() {
 
-  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
@@ -23,7 +24,8 @@ export default function Home() {
         email: formData.get("email"),
         password: formData.get("password"),
       });
-      console.log(data);
+      const response = await login(data.email, data.password)
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
