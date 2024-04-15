@@ -33,7 +33,7 @@ export async function getUserById(id: number): Promise<GetUserResponse> {
     const response = await axiosInstance.get(`/user/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Erro ao buscar usuário:", error);
+    console.error("Erro ao buscar usuário", error);
     throw error;
   }
 }
@@ -75,6 +75,16 @@ export async function updateUser(
     return { user: response.data, status: response.status };
   } catch (error) {
     console.error("Erro ao editar usuário:", error);
+    throw error;
+  }
+}
+
+export async function deleteUser(id: number): Promise<{ status: number }> {
+  try {
+    const { status } = await axiosInstance.delete(`user/${id}`);
+    return { status };
+  } catch (error) {
+    console.error("Erro ao deletar usuário:", error);
     throw error;
   }
 }

@@ -33,6 +33,10 @@ export default function Home() {
           maxAge: 60 * 60 * 1, // 1 day
           path: '/'
         })
+        setCookie(null, "USER_ID", String(result.user.id), {
+          maxAge: 60 * 60 * 1, // 1 day
+          path: '/'
+        })
         router.push('/dashboard')
         toast.success('Bem vindo(a)')
       } else {

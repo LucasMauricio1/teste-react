@@ -22,18 +22,6 @@ export default function Dashboard() {
     return null;
   }
 
-  // async function fetchUsers() {
-  //   try {
-  //     const response = await getAllUsers();
-  //     if (Array.isArray(response)) {
-  //       const users: User[] = response.map((user: User) => (user))
-  //       setUsers(users)
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao buscar usuários:", error);
-  //   }
-  // }
-
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -61,12 +49,6 @@ export default function Dashboard() {
   return (
     <main className="h-screen bg-zinc-950 text-zinc-300 flex flex-col items-center justify-center gap-4">
         <Header title="Listagem dos usuários:"/>
-        {/* <button
-          onClick={fetchUsers}
-          className="bg-gray-500 rounded font-semibold text-white h-10 hover:bg-gray-600 w-full px-5"
-        >
-          Atualizar
-        </button> */}
       <div
         className="flex flex-col gap-4 w-full max-w-xs items-center"
       >

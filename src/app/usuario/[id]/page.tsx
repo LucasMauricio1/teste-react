@@ -1,9 +1,9 @@
 'use client'
 
-import { getAllUsers, getUserById, updateUser } from "@/services/user/userService"
+import { deleteUser, getAllUsers, getUserById, updateUser } from "@/services/user/userService"
 import { GetUserResponse, User } from "@/services/user/userType"
 import { useRouter, useParams } from "next/navigation"
-import { parseCookies } from "nookies"
+import { parseCookies, destroyCookie } from "nookies"
 import { toast } from 'react-toastify';
 import { useEffect, useState } from "react"
 import Icon from "../../components/Icon"
@@ -84,6 +84,36 @@ export default function UserPage() {
     }
   }
 
+  async function handleDeleteUser() {
+    const userId = cookies.USER_ID
+    if (Number(id) === 1) {
+      toast.error('Não é possível deletar esse usuário!', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+      return
+    } else {
+      try {
+        await deleteUser(Number(id))
+        toast.success('Usuário excluído com sucesso!', {
+          position: 'top-right',
+          autoClose: 3000
+        })
+        if (id === userId) {
+          destroyCookie(null, 'USER_ID')
+        }
+        router.push('/dashboard')
+      } catch (error) {
+        console.log('Erro ao deletar usuário', error)
+        toast.error('Erro ao deletar usuário. Tente novamente mais tarde.', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+      }
+    }
+
+  }
+
   return (
     <main className="h-screen bg-zinc-950 text-zinc-300 flex items-center justify-center">
       {user && (
@@ -154,13 +184,13 @@ export default function UserPage() {
             >
               Editar
             </button>
-            <button
-              className="bg-red-500 rounded font-semibold text-white h-10 hover:bg-red-600 w-1/3"
+            <div
+              onClick={handleDeleteUser}
+              className="bg-red-500 flex justify-center items-center rounded font-semibold text-white h-10 hover:bg-red-600 w-1/3 cursor-pointer"
             >
               Deletar
-            </button>
+            </div>
           </div>
-
         </form>
       )}
 
