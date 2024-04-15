@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import Input from "./components/Input";
 import Icon from "./components/Icon";
 import { login } from "@/services/auth/authService";
-import { setCookie, parseCookies } from 'nookies'
+import { setCookie } from "nookies";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -15,7 +15,7 @@ const loginSchema = z.object({
 });
 
 export default function Home() {
-  const router = useRouter()
+  const router = useRouter();
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,25 +26,24 @@ export default function Home() {
         email: formData.get("email"),
         password: formData.get("password"),
       });
-      const {result} = await login(data.email, data.password)
-      
+      const { result } = await login(data.email, data.password);
+
       if (result.accessToken) {
-        setCookie(null, 'USER_TOKEN', result.accessToken, {
+        setCookie(null, "USER_TOKEN", result.accessToken, {
           maxAge: 60 * 60 * 1, // 1 day
-          path: '/'
-        })
+          path: "/",
+        });
         setCookie(null, "USER_ID", String(result.user.id), {
           maxAge: 60 * 60 * 1, // 1 day
-          path: '/'
-        })
-        router.push('/dashboard')
-        toast.success('Bem vindo(a)')
+          path: "/",
+        });
+        router.push("/dashboard");
+        toast.success("Bem vindo(a)");
       } else {
-        toast.error('Email ou senha incorretos')
+        toast.error("Email ou senha incorretos.");
       }
-      
     } catch (err) {
-      toast.error('Email ou senha incorretos')
+      toast.error("Email ou senha incorretos.");
     }
   }
 

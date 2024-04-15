@@ -1,32 +1,33 @@
-'use client'
+"use client";
 
-import { deleteUser, getAllUsers, getUserById, updateUser } from "@/services/user/userService"
-import { GetUserResponse, User } from "@/services/user/userType"
-import { useRouter, useParams } from "next/navigation"
-import { parseCookies, destroyCookie } from "nookies"
-import { toast } from 'react-toastify';
-import { useEffect, useState } from "react"
-import Icon from "../../components/Icon"
-import Header from "../../components/Header"
-import Input from "@/app/components/Input"
-import { z } from "zod"
+import {
+  deleteUser,
+  getUserById,
+  updateUser,
+} from "@/services/user/userService";
+import { useRouter, useParams } from "next/navigation";
+import { parseCookies, destroyCookie } from "nookies";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import Icon from "../../components/Icon";
+import Header from "../../components/Header";
+import Input from "@/app/components/Input";
+import { z } from "zod";
 
 const userSchema = z.object({
   email: z.string().email("Insira um e-mail válido.").toLowerCase(),
-  name: z.string().min(3, 'O nome deve conter pelo menos 3 caracteres'),
-  type: z.enum(["admin", "user"],),
+  name: z.string().min(3, "O nome deve conter pelo menos 3 caracteres"),
+  type: z.enum(["admin", "user"]),
   password: z.string().min(4, "A senha deve conter pelo menos 4 caracteres"),
 });
 
 export default function UserPage() {
-  const router = useRouter()
-  const params = useParams<{ id: string }>()
-  const { id } = params
+  const router = useRouter();
+  const params = useParams<{ id: string }>();
+  const { id } = params;
 
-
-
-  const cookies = parseCookies()
-  const token = cookies.USER_TOKEN
+  const cookies = parseCookies();
+  const token = cookies.USER_TOKEN;
   const isAuthenticated = !!token;
 
   const [name, setName] = useState<string>("");
@@ -34,25 +35,26 @@ export default function UserPage() {
   const [type, setType] = useState<string>("user");
   const [password, setPassword] = useState<string>("");
 
-  if (!isAuthenticated) {
-    router.push("/");
-    return null;
-  }
-
   useEffect(() => {
+    if (!isAuthenticated) {
+      router.push("/");
+      return;
+    }
+
     async function fetchUser() {
       try {
         const response = await getUserById(Number(id));
         setName(response.name);
         setEmail(response.email);
         setType(response.type);
-        setPassword(response.password)
+        setPassword(response.password);
       } catch (error) {
         console.error("Erro ao buscar usuários:", error);
       }
     }
+
     fetchUser();
-  }, [id]);
+  }, [id, isAuthenticated]);
 
   async function handleEditUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -61,49 +63,49 @@ export default function UserPage() {
     const data = userSchema.parse({
       name: formData.get("name"),
       email: formData.get("email"),
-      type: formData.get("type") || 'user',
+      type: formData.get("type") || "user",
       password: formData.get("password"),
     });
 
     try {
-      await updateUser(Number(id), data)
-      toast.success('Usuário atualizado com sucesso!', {
-        position: 'top-right',
-        autoClose: 3000
-      })
-      router.push('/dashboard')
+      await updateUser(Number(id), data);
+      toast.success("Usuário atualizado com sucesso!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      router.push("/dashboard");
     } catch (error) {
-      console.log('Erro ao editar usuário', error)
-      toast.error('Erro ao editar usuário. Tente novamente mais tarde.', {
-        position: 'top-right',
+      console.log("Erro ao editar usuário", error);
+      toast.error("Erro ao editar usuário. Tente novamente mais tarde.", {
+        position: "top-right",
         autoClose: 3000,
       });
     }
   }
 
   async function handleDeleteUser() {
-    const userId = cookies.USER_ID
+    const userId = cookies.USER_ID;
     if (Number(id) === 1) {
-      toast.error('Não é possível deletar esse usuário!', {
-        position: 'top-right',
+      toast.error("Não é possível deletar esse usuário!", {
+        position: "top-right",
         autoClose: 3000,
       });
-      return
+      return;
     } else {
       try {
-        await deleteUser(Number(id))
-        toast.success('Usuário excluído com sucesso!', {
-          position: 'top-right',
-          autoClose: 3000
-        })
+        await deleteUser(Number(id));
+        toast.success("Usuário excluído com sucesso!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
         if (id === userId) {
-          destroyCookie(null, 'USER_ID')
+          destroyCookie(null, "USER_ID");
         }
-        router.push('/dashboard')
+        router.push("/dashboard");
       } catch (error) {
-        console.log('Erro ao deletar usuário', error)
-        toast.error('Erro ao deletar usuário. Tente novamente mais tarde.', {
-          position: 'top-right',
+        console.log("Erro ao deletar usuário", error);
+        toast.error("Erro ao deletar usuário. Tente novamente mais tarde.", {
+          position: "top-right",
           autoClose: 3000,
         });
       }
@@ -136,7 +138,7 @@ export default function UserPage() {
           <Input
             type="text"
             name="name"
-            value={name || ''}
+            value={name || ""}
             onChange={(e) => setName(e.target.value)}
             className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
           />
@@ -146,7 +148,7 @@ export default function UserPage() {
           <Input
             type="email"
             name="email"
-            value={email || ''}
+            value={email || ""}
             onChange={(e) => setEmail(e.target.value)}
             className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
           />
@@ -156,7 +158,7 @@ export default function UserPage() {
           <Input
             type="password"
             name="password"
-            value={password || ''}
+            value={password || ""}
             onChange={(e) => setPassword(e.target.value)}
             className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
           />
@@ -166,7 +168,7 @@ export default function UserPage() {
           <Input
             type="text"
             name="type"
-            value={type || ''}
+            value={type || ""}
             onChange={(e) => setType(e.target.value)}
             className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
           />
@@ -188,5 +190,5 @@ export default function UserPage() {
         </div>
       </form>
     </main>
-  )
-} 
+  );
+}
