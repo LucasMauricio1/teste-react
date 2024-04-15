@@ -5,10 +5,10 @@ import { User } from "@/services/user/userType"
 import { useRouter } from "next/navigation"
 import { parseCookies } from "nookies"
 import { useEffect, useState } from "react"
-import Icon from "../components/Icon"
-import Header from "../components/Header"
+import Icon from "../../components/Icon"
+import Header from "../../components/Header"
 
-export default function Dashboard() {
+export default function UserPage() {
   const router = useRouter()
   const cookies = parseCookies()
   const token = cookies.USER_TOKEN
