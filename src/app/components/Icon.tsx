@@ -1,19 +1,19 @@
 import { UserIcon, AtSymbolIcon, LockClosedIcon } from '@heroicons/react/24/outline';
+import React from 'react';
 
 interface Props {
   name: 'user' | 'atSymbol' | 'lockClosed';
-  size: string | number;
 }
 
-export default function Icon({ name, size }: Props) {
+export default function Icon({ name }: Props) {
   const renderIcon = () => {
     switch (name) {
       case 'user':
-        return <UserIcon className={`h-${size} w-${size}`} />;
+        return <UserIcon className={`h-12 w-12`} />;
       case 'atSymbol':
-        return <AtSymbolIcon className={`h-${size} w-${size}`} />;
+        return <AtSymbolIcon className={`h-12 w-12`} />;
       case 'lockClosed':
-        return <LockClosedIcon className={`h-${size} w-${size}`} />;
+        return <LockClosedIcon className={`h-12 w-12`} />;
       default:
         return null;
     }
