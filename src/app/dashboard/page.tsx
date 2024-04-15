@@ -47,10 +47,13 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="h-screen bg-zinc-950 text-zinc-300 flex flex-col items-center justify-center gap-4">
-        <Header title="Listagem dos usuários:"/>
+    <main className="min-h-screen bg-zinc-950 text-zinc-300 flex flex-col items-center justify-center gap-4">
+      <div className="pt-4">
+      <Header title="Listagem dos usuários:"/>
+      </div>
+        
       <div
-        className="flex flex-col gap-4 w-full max-w-xs items-center"
+        className="flex flex-col gap-4 w-full max-w-xs items-center pb-4"
       >
         <table className="w-full border-collapse">
           <thead>

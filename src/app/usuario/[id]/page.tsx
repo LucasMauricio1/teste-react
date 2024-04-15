@@ -29,7 +29,6 @@ export default function UserPage() {
   const token = cookies.USER_TOKEN
   const isAuthenticated = !!token;
 
-  const [user, setUser] = useState<GetUserResponse | null>(null)
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [type, setType] = useState<string>("user");
@@ -40,12 +39,10 @@ export default function UserPage() {
     return null;
   }
 
-
   useEffect(() => {
     async function fetchUser() {
       try {
         const response = await getUserById(Number(id));
-        setUser(response);
         setName(response.name);
         setEmail(response.email);
         setType(response.type);
@@ -76,7 +73,7 @@ export default function UserPage() {
       })
       router.push('/dashboard')
     } catch (error) {
-      console.log('Erro ao criar usuário', error)
+      console.log('Erro ao editar usuário', error)
       toast.error('Erro ao editar usuário. Tente novamente mais tarde.', {
         position: 'top-right',
         autoClose: 3000,
@@ -111,89 +108,85 @@ export default function UserPage() {
         });
       }
     }
-
   }
 
   return (
-    <main className="h-screen bg-zinc-950 text-zinc-300 flex items-center justify-center">
-      {user && (
-        <form
-          onSubmit={handleEditUser}
-          className="flex flex-col gap-4 w-full max-w-xs"
-          action=""
-        >
-          <div className="flex flex-col items-center justify-center gap-4">
-            <Header title="Editar usuário" />
-            <Icon name="user" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="">ID</label>
-            <Input
-              type="number"
-              name="id"
-              value={id}
-              disabled={true}
-              className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="">Nome</label>
-            <Input
-              type="text"
-              name="name"
-              value={name || ''}
-              onChange={(e) => setName(e.target.value)}
-              className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="">Email</label>
-            <Input
-              type="email"
-              name="email"
-              value={email || ''}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="">Senha</label>
-            <Input
-              type="password"
-              name="password"
-              value={password || ''}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label htmlFor="">Tipo</label>
-            <Input
-              type="text"
-              name="type"
-              value={type || ''}
-              onChange={(e) => setType(e.target.value)}
-              className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
-            />
-          </div>
+    <main className="min-h-screen bg-zinc-950 text-zinc-300 flex items-center justify-center">
+      <form
+        onSubmit={handleEditUser}
+        className="flex flex-col gap-4 w-full max-w-xs py-4"
+        action=""
+      >
+        <div className="flex flex-col items-center justify-center gap-4">
+          <Header title="Editar usuário" />
+          <Icon name="user" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="">ID</label>
+          <Input
+            type="number"
+            name="id"
+            value={id}
+            disabled={true}
+            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="">Nome</label>
+          <Input
+            type="text"
+            name="name"
+            value={name || ''}
+            onChange={(e) => setName(e.target.value)}
+            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="">Email</label>
+          <Input
+            type="email"
+            name="email"
+            value={email || ''}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="">Senha</label>
+          <Input
+            type="password"
+            name="password"
+            value={password || ''}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="">Tipo</label>
+          <Input
+            type="text"
+            name="type"
+            value={type || ''}
+            onChange={(e) => setType(e.target.value)}
+            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+          />
+        </div>
 
-          <div className="w-full flex justify-between">
-            <button
-              type="submit"
-              className="bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600 w-1/3"
-            >
-              Editar
-            </button>
-            <div
-              onClick={handleDeleteUser}
-              className="bg-red-500 flex justify-center items-center rounded font-semibold text-white h-10 hover:bg-red-600 w-1/3 cursor-pointer"
-            >
-              Deletar
-            </div>
+        <div className="w-full flex justify-between">
+          <button
+            type="submit"
+            className="bg-emerald-500 rounded font-semibold text-white h-10 hover:bg-emerald-600 w-1/3"
+          >
+            Editar
+          </button>
+          <div
+            onClick={handleDeleteUser}
+            className="bg-red-500 flex justify-center items-center rounded font-semibold text-white h-10 hover:bg-red-600 w-1/3 cursor-pointer"
+          >
+            Deletar
           </div>
-        </form>
-      )}
-
+        </div>
+      </form>
     </main>
   )
 } 

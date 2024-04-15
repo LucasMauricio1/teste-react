@@ -46,7 +46,12 @@ export async function createUser(
       data.type = "user";
     }
 
-    const response = await axiosInstance.post("/user", { data });
+    const response = await axiosInstance.post("/user", {
+      email: data.email,
+      name: data.name,
+      password: data.password,
+      type: data.type,
+    });
     return {
       user: response.data,
       status: response.status,
