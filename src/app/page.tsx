@@ -7,6 +7,7 @@ import Icon from "./components/Icon";
 import { login } from "@/services/auth/authService";
 import { setCookie, parseCookies } from 'nookies'
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const loginSchema = z.object({
   email: z.string().email("Insira um e-mail válido.").toLowerCase(),
@@ -25,20 +26,21 @@ export default function Home() {
         email: formData.get("email"),
         password: formData.get("password"),
       });
-      const { accessToken } = await login(data.email, data.password)
+      const {result} = await login(data.email, data.password)
       
-      if (accessToken) {
-        setCookie(null, 'USER_TOKEN', accessToken, {
+      if (result.accessToken) {
+        setCookie(null, 'USER_TOKEN', result.accessToken, {
           maxAge: 60 * 60 * 1, // 1 day
           path: '/'
         })
         router.push('/dashboard')
+        toast.success('Bem vindo(a)')
       } else {
-        throw new Error('Email ou senha incorretos')
+        toast.error('Email ou senha incorretos')
       }
       
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      toast.error('Email ou senha incorretos')
     }
   }
 

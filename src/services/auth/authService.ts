@@ -5,14 +5,11 @@ import { LoginResponse } from "./authType";
 export async function login(
   email: string,
   password: string
-): Promise<LoginResponse> {
+): Promise<{result: LoginResponse, status: number}> {
   const response = await axios.post(`${baseUrl}/auth`, {
     email,
     password,
   });
 
-  const accessToken = response.data.accessToken;
-  const user = response.data.user;
-
-  return { accessToken, user };
+  return { result: response.data, status: response.status };
 }

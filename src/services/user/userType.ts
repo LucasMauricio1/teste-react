@@ -13,3 +13,13 @@ export interface CreateUser {
 }
 
 export interface CreateUserResponse extends User {}
+
+export interface GetUserResponse {
+  id: number;
+  name: string;
+  email: string;
+  type: string;
+  password: string;
+}
+
+export interface UpdateUser extends CreateUser{}
