@@ -1,12 +1,12 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { ZodError, z } from "zod";
+import { z } from "zod";
 import Header from "./components/Header";
 import Input from "./components/Input";
 import Icon from "./components/Icon";
-import { useState } from "react";
-import { login } from "@/services/authService";
+import { login } from "@/services/auth/authService";
+import { setCookie, parseCookies } from 'nookies'
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email("Insira um e-mail válido.").toLowerCase(),
@@ -14,6 +14,7 @@ const loginSchema = z.object({
 });
 
 export default function Home() {
+  const router = useRouter()
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -24,8 +25,18 @@ export default function Home() {
         email: formData.get("email"),
         password: formData.get("password"),
       });
-      const response = await login(data.email, data.password)
-      console.log(response);
+      const { accessToken } = await login(data.email, data.password)
+      
+      if (accessToken) {
+        setCookie(null, 'USER_TOKEN', accessToken, {
+          maxAge: 60 * 60 * 1, // 1 day
+          path: '/'
+        })
+        router.push('/dashboard')
+      } else {
+        throw new Error('Email ou senha incorretos')
+      }
+      
     } catch (error) {
       console.log(error);
     }
