@@ -1,18 +1,40 @@
 import axios from "axios";
 import { baseUrl } from "../api";
-import { LoginResponse } from "./userType";
+import { CreateUser, CreateUserResponse } from "./userType";
+import { parseCookies } from "nookies";
 
-export async function login(
-  email: string,
-  password: string
-): Promise<LoginResponse> {
-  const response = await axios.post(`${baseUrl}/auth`, {
-    email,
-    password,
-  });
+const cookies = parseCookies();
+const accessToken = cookies.USER_TOKEN;
 
-  const accessToken = response.data.accessToken;
-  const user = response.data.user;
+const axiosInstance = axios.create({
+  baseURL: baseUrl,
+  headers: {
+    Authorization: `Bearer ${accessToken}`,
+  },
+});
 
-  return { accessToken, user };
+export async function getAllUsers(): Promise<CreateUserResponse> {
+  try {
+    const response = await axiosInstance.get("/user");
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    throw error;
+  }
+}
+
+export async function createUser(
+  data: CreateUser
+): Promise<CreateUserResponse> {
+  try {
+    if (!data.type || data.type !== "admin") {
+      data.type = "user";
+    }
+
+    const response = await axiosInstance.post("/user", { data });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar usuário:", error);
+    throw error;
+  }
 }
