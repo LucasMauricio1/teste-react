@@ -33,5 +33,8 @@ export default function Icon({ name, onClick }: Props) {
     }
   };
 
-  return <div className="flex justify-center">{renderIcon()}</div>;
+  return (
+    <main>
+      <div className="flex justify-center">{renderIcon()}</div>
+    </main>)
 }

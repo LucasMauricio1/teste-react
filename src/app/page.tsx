@@ -1,6 +1,5 @@
 "use client";
 
-import { z } from "zod";
 import Header from "./components/Header";
 import Input from "./components/Input";
 import Icon from "./components/Icon";
@@ -8,24 +7,26 @@ import { login } from "@/services/auth/authService";
 import { setCookie } from "nookies";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "./utils/schemas";
+import { z } from "zod";
 
-const loginSchema = z.object({
-  email: z.string().email("Insira um e-mail válido.").toLowerCase(),
-  password: z.string().min(4, "A senha deve conter pelo menos 4 caracteres"),
-});
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function Home() {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
+
   const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
+  async function handleLogin(data: LoginFormData) {
     try {
-      const data = loginSchema.parse({
-        email: formData.get("email"),
-        password: formData.get("password"),
-      });
       const { result } = await login(data.email, data.password);
 
       if (result.accessToken) {
@@ -39,40 +40,47 @@ export default function Home() {
         });
         router.push("/dashboard");
         toast.success("Bem vindo(a)");
-      } else {
-        toast.error("Email ou senha incorretos.");
       }
-    } catch (err) {
-      toast.error("Email ou senha incorretos.");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     }
   }
 
   return (
     <main className="h-screen bg-zinc-950 text-zinc-300 flex items-center justify-center">
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSubmit(handleLogin)}
         className="flex flex-col gap-4 w-full max-w-xs"
-        action=""
       >
         <div className="flex flex-col items-center justify-center gap-4">
           <Header title="Bem vindo(a)!" />
           <Icon name="user" />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="">Email</label>
+          <label htmlFor="email">Email</label>
           <Input
+            {...register("email")}
             type="email"
-            name="email"
-            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+            className={`border text-white shadow-sm rounded h-10 px-3 bg-zinc-900 ${
+              errors.email ? "border-red-500" : "border-zinc-800"
+            }`}
           />
+          {errors.email && (
+            <span className="text-red-500">{errors.email.message}</span>
+          )}
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="">Senha</label>
+          <label htmlFor="password">Senha</label>
           <Input
+            {...register("password")}
             type="password"
-            name="password"
-            className="border border-zinc-800 text-white shadow-sm rounded h-10 px-3 bg-zinc-900"
+            className={`border text-white shadow-sm rounded h-10 px-3 bg-zinc-900 ${
+              errors.email ? "border-red-500" : "border-zinc-800"
+            }`}
           />
+          {errors.password && (
+            <span className="text-red-500">{errors.password.message}</span>
+          )}
         </div>
 
         <button
