@@ -1,46 +1,50 @@
 import { setCookie, destroyCookie, parseCookies } from "nookies";
 
 interface AddCookieProps {
-  tokenName: string;
-  tokenData: string;
+  cookieName: string;
+  cookieData: string;
   maxAge: number;
 }
 
 interface RemoveCookieProps {
-  tokenName: string;
+  cookieName: string;
 }
 
+interface HasCookieProps extends RemoveCookieProps {}
+
 export function useCookies() {
-  function addCookie({ tokenName, tokenData, maxAge }: AddCookieProps) {
+  function addCookie({ cookieName, cookieData, maxAge }: AddCookieProps) {
     try {
-      if (tokenData) {
-        setCookie(null, tokenName, tokenData, {
+      if (cookieData) {
+        setCookie(null, cookieName, cookieData, {
           maxAge,
           path: "/",
         });
       } else {
-        console.warn(`No token data provided for cookie: ${tokenName}`);
+        console.warn(`No token data provided for cookie: ${cookieName}`);
       }
     } catch (error) {
       console.log("Error setting cookie:", error);
     }
   }
 
-  function removeCookie({ tokenName }: RemoveCookieProps) {
+  function removeCookie({ cookieName }: RemoveCookieProps) {
     try {
-      destroyCookie(null, tokenName);
+      destroyCookie(null, cookieName);
     } catch (error) {
       console.log("Error removing cookie:", error);
     }
   }
 
-  function hasCookie() {
+  function hasCookie({ cookieName }: HasCookieProps) {
     try {
       const cookie = parseCookies();
-      return cookie;
+      const cookieData = cookie[cookieName];
+      return cookieData;
+
     } catch (error) {
       console.log("Error checking cookie:", error);
-      return false;
+      return null;
     }
   }
 

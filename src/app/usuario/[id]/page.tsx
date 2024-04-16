@@ -16,6 +16,7 @@ import { z } from "zod";
 import { updateUserSchema } from "@/app/utils/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCookies } from "@/app/hooks/useCookies";
 
 type UpdateuserFormData = z.infer<typeof updateUserSchema>;
 
@@ -24,9 +25,15 @@ export default function UserPage() {
   const params = useParams<{ id: string }>();
   const { id } = params;
 
-  const cookies = parseCookies();
-  const token = cookies.USER_TOKEN;
-  const isAuthenticated = !!token;
+  const { hasCookie } = useCookies();
+  const token = hasCookie({ cookieName: "USER_TOKEN" });
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/");
+      return;
+    }
+  }, [router, token]);
 
   const {
     register,
@@ -44,11 +51,6 @@ export default function UserPage() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/");
-      return;
-    }
-
     async function fetchUser() {
       try {
         const response = await getUserById(Number(id));
@@ -64,7 +66,7 @@ export default function UserPage() {
     }
 
     fetchUser();
-  }, [id, isAuthenticated]);
+  }, [id]);
 
   async function handleEditUser(data: UpdateuserFormData) {
     try {
@@ -82,8 +84,11 @@ export default function UserPage() {
     }
   }
 
+  const userId = hasCookie({cookieName: "USER_ID"});
+  console.log('id: ', userId)
+
   async function handleDeleteUser() {
-    const userId = cookies.USER_ID;
+    const userId = hasCookie({cookieName: "USER_ID"});
     if (Number(id) === 1) {
       toast.error("Não é possível deletar esse usuário!", {
         position: "top-right",

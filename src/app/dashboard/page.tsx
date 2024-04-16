@@ -1,27 +1,23 @@
 "use client";
 
-import { getAllUsers } from "@/services/user/userService";
-import { User } from "@/services/user/userType";
 import { useRouter } from "next/navigation";
-import { parseCookies } from "nookies";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Header from "../components/Header";
 import { UsersTable } from "../components/Table/UsersTable";
+import { useCookies } from "../hooks/useCookies";
 
 export default function Dashboard() {
   const router = useRouter();
-  const cookies = parseCookies();
-  const token = cookies.USER_TOKEN;
 
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { hasCookie } = useCookies();
+  const token = hasCookie({ cookieName: "USER_TOKEN" });
 
-  const isAuthenticated = !!token;
-
-    if (!isAuthenticated) {
+  useEffect(() => {
+    if (!token) {
       router.push("/");
-      return null;
+      return;
     }
+  }, [router, token]);
 
   const handleCreateUser = () => {
     router.push(`/criar-usuario`);

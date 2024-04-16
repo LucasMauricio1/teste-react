@@ -12,15 +12,12 @@ import { z } from "zod";
 import { createUserSchema } from "../utils/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCookies } from "../hooks/useCookies";
 
 type CreateUserFormData = z.infer<typeof createUserSchema>;
 
 export default function CreateUser() {
   const router = useRouter();
-
-  const cookies = parseCookies();
-  const token = cookies.USER_TOKEN;
-  const isAuthenticated = !!token;
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -29,6 +26,16 @@ export default function CreateUser() {
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { hasCookie } = useCookies();
+  const token = hasCookie({ cookieName: "USER_TOKEN" });
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/");
+      return;
+    }
+  }, [router, token]);
+
   const {
     register,
     formState: { errors },
@@ -36,15 +43,6 @@ export default function CreateUser() {
   } = useForm<CreateUserFormData>({
     resolver: zodResolver(createUserSchema),
   });
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/");
-      return;
-    } else {
-      setLoading(false);
-    }
-  }, [isAuthenticated]);
 
   async function handleCreateUser(data: CreateUserFormData) {
     try {

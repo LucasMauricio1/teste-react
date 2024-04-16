@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import Input from "../Input";
 import { login } from "@/services/auth/authService";
@@ -21,7 +21,7 @@ export function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const { addCookie } = useCookies()
+  const { addCookie } = useCookies();
 
   const router = useRouter();
 
@@ -30,8 +30,16 @@ export function LoginForm() {
       const { result } = await login(data.email, data.password);
 
       if (result.accessToken) {
-        addCookie({ tokenName: "USER_TOKEN", tokenData: String(result.accessToken), maxAge: 60 * 60 * 7 })
-        addCookie({ tokenName: "USER_ID", tokenData: String(result.user.id), maxAge: 60 * 60 * 7 })
+        addCookie({
+          cookieName: "USER_TOKEN",
+          cookieData: String(result.accessToken),
+          maxAge: 60 * 60 * 7,
+        });
+        addCookie({
+          cookieName: "USER_ID",
+          cookieData: String(result.user.id),
+          maxAge: 60 * 60 * 7,
+        });
         router.push("/dashboard");
         toast.success("Bem vindo(a)");
       }
@@ -50,8 +58,9 @@ export function LoginForm() {
         <Input
           {...register("email")}
           type="email"
-          className={`border text-white shadow-sm rounded h-10 px-3 bg-zinc-900 ${errors.email ? "border-red-500" : "border-zinc-800"
-            }`}
+          className={`border text-white shadow-sm rounded h-10 px-3 bg-zinc-900 ${
+            errors.email ? "border-red-500" : "border-zinc-800"
+          }`}
         />
         {errors.email && (
           <span className="text-red-500">{errors.email.message}</span>
@@ -62,8 +71,9 @@ export function LoginForm() {
         <Input
           {...register("password")}
           type="password"
-          className={`border text-white shadow-sm rounded h-10 px-3 bg-zinc-900 ${errors.email ? "border-red-500" : "border-zinc-800"
-            }`}
+          className={`border text-white shadow-sm rounded h-10 px-3 bg-zinc-900 ${
+            errors.email ? "border-red-500" : "border-zinc-800"
+          }`}
         />
         {errors.password && (
           <span className="text-red-500">{errors.password.message}</span>
@@ -77,5 +87,5 @@ export function LoginForm() {
         Entrar
       </button>
     </form>
-  )
+  );
 }
