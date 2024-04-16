@@ -6,7 +6,7 @@ import {
   updateUser,
 } from "@/services/user/userService";
 import { useRouter, useParams } from "next/navigation";
-import { parseCookies, destroyCookie } from "nookies";
+import { destroyCookie } from "nookies";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Icon from "../../components/Icon";
@@ -17,6 +17,7 @@ import { updateUserSchema } from "@/app/utils/schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCookies } from "@/app/hooks/useCookies";
+import { User } from "@/services/user/userType";
 
 type UpdateuserFormData = z.infer<typeof updateUserSchema>;
 
@@ -25,8 +26,10 @@ export default function UserPage() {
   const params = useParams<{ id: string }>();
   const { id } = params;
 
-  const { hasCookie } = useCookies();
+  const { hasCookie, removeCookie } = useCookies();
   const token = hasCookie({ cookieName: "USER_TOKEN" });
+  const user = hasCookie({ cookieName: "USER_DATA" });
+  const userData: User = user && JSON.parse(user);
 
   useEffect(() => {
     if (!token) {
@@ -69,6 +72,10 @@ export default function UserPage() {
   }, [id]);
 
   async function handleEditUser(data: UpdateuserFormData) {
+    if (userData.type !== "admin") {
+      toast.error("Somente usuários admin podem editar usuários");
+      return;
+    }
     try {
       await updateUser(Number(id), data);
       toast.success("Usuário atualizado com sucesso!", {
@@ -84,16 +91,15 @@ export default function UserPage() {
     }
   }
 
-  const userId = hasCookie({cookieName: "USER_ID"});
-  console.log('id: ', userId)
-
   async function handleDeleteUser() {
-    const userId = hasCookie({cookieName: "USER_ID"});
     if (Number(id) === 1) {
       toast.error("Não é possível deletar esse usuário!", {
         position: "top-right",
         autoClose: 3000,
       });
+      return;
+    } else if (userData.type !== "admin") {
+      toast.error("Somente usuários admin podem apagar usuários");
       return;
     } else {
       try {
@@ -102,8 +108,9 @@ export default function UserPage() {
           position: "top-right",
           autoClose: 3000,
         });
-        if (id === userId) {
-          destroyCookie(null, "USER_ID");
+        if (id === String(userData.id)) {
+          removeCookie({cookieName: 'USER_TOKEN'});
+          return router.push("/");
         }
         router.push("/dashboard");
       } catch (error) {

@@ -36,8 +36,8 @@ export function LoginForm() {
           maxAge: 60 * 60 * 7,
         });
         addCookie({
-          cookieName: "USER_ID",
-          cookieData: String(result.user.id),
+          cookieName: "USER_DATA",
+          cookieData: JSON.stringify(result.user),
           maxAge: 60 * 60 * 7,
         });
         router.push("/dashboard");

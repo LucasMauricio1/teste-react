@@ -5,12 +5,16 @@ import { useEffect } from "react";
 import Header from "../components/Header";
 import { UsersTable } from "../components/Table/UsersTable";
 import { useCookies } from "../hooks/useCookies";
+import { User } from "@/services/user/userType";
+import { toast } from "react-toastify";
 
 export default function Dashboard() {
   const router = useRouter();
 
   const { hasCookie } = useCookies();
   const token = hasCookie({ cookieName: "USER_TOKEN" });
+  const user = hasCookie({ cookieName: "USER_DATA" });
+  const userData: User = user && JSON.parse(user)
 
   useEffect(() => {
     if (!token) {
@@ -20,6 +24,10 @@ export default function Dashboard() {
   }, [router, token]);
 
   const handleCreateUser = () => {
+    if (userData.type !== 'admin') {
+      toast.error('Somente os usuários admin podem cadastrar novos usuários')
+      return
+    }
     router.push(`/criar-usuario`);
   };
 

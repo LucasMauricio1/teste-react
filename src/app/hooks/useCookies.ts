@@ -41,7 +41,6 @@ export function useCookies() {
       const cookie = parseCookies();
       const cookieData = cookie[cookieName];
       return cookieData;
-
     } catch (error) {
       console.log("Error checking cookie:", error);
       return null;
