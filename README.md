@@ -40,19 +40,23 @@ Senha para login: 1234
 :heavy_check_mark: Editar um usuário;\
 :heavy_check_mark: Deletar um usuário;\
 :heavy_check_mark: Criar um usuário;\
+:heavy_check_mark: Validação dos formulários;\
+:heavy_check_mark: Componentes de formulários;\
+:heavy_check_mark: Criação do hook useCookies;\
+:heavy_check_mark: Remoção de erros do next;\
 :heavy_check_mark: Tratamento de erros e toast;
 
 ## :rocket: Tecnologias
 
 As seguintes ferramentas foram utilizadas neste projeto:
 
-- [NextJs](https://docs.nestjs.com)
+- [NextJs](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org)
-- [Zod](https://docs.nestjs.com/security/authentication)
-- [Axios](https://docs.nestjs.com/techniques/validation)
-- [Nookies](https://docs.nestjs.com/techniques/validation)
-- [React-Hook-Form](https://docs.nestjs.com/techniques/validation)
-- [Heroicons](https://docs.nestjs.com/techniques/validation)
+- [Zod](https://zod.dev/)
+- [Axios](https://axios-http.com/docs/intro)
+- [Nookies](https://github.com/maticzav/nookies)
+- [React-Hook-Form](https://react-hook-form.com/)
+- [Heroicons](https://heroicons.com/)
 
 ## :closed_book: Requisitos ##
 

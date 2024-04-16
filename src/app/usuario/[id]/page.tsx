@@ -6,7 +6,6 @@ import {
   updateUser,
 } from "@/services/user/userService";
 import { useRouter, useParams } from "next/navigation";
-import { destroyCookie } from "nookies";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import Icon from "../../components/Icon";
@@ -92,7 +91,7 @@ export default function UserPage() {
   }
 
   async function handleDeleteUser() {
-    if (Number(id) === 1) {
+    if (id === '1') {
       toast.error("Não é possível deletar esse usuário!", {
         position: "top-right",
         autoClose: 3000,
